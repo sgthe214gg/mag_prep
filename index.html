@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="vitals">
+  <title>Magnet School Prep Portal — BCA, MEK &amp; SHSAT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #f8fafc;
+      --surface-container-low: #ffffff;
+      --surface-container: #eef2ff;
+      --surface-container-high: #e0e7ff;
+      --surface-muted: #f1f5f9;
+
+      --on-surface: #0f172a;
+      --on-surface-variant: #475569;
+
+      --outline: #94a3b8;
+      --outline-variant: #e2e8f0;
+
+      --primary: #4338ca;
+      --primary-hover: #3730a3;
+      --on-primary: #ffffff;
+      --primary-container: #e0e7ff;
+      --on-primary-container: #312e81;
+      --secondary: #1e293b;
+      --tertiary: #15803d;
+      --tertiary-container: #dcfce7;
+      --on-tertiary-container: #14532d;
+      --error: #b91c1c;
+      --error-container: #fee2e2;
+      --on-error: #ffffff;
+      --positive: #15803d;
+      --warning: #b45309;
+      --warning-container: #fef3c7;
+      --focus: #4338ca;
+
+      --data-1: #4338ca;
+      --data-2: #15803d;
+      --data-3: #b45309;
+      --data-4: #0f766e;
+      --data-context: #cbd5e1;
+
+      --font-headline: 'Figtree', sans-serif;
+      --font-body: 'Atkinson Hyperlegible', sans-serif;
+      --font-label: 'Figtree', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --display-size: clamp(1.625rem, 1.3rem + 1vw, 2.125rem);
+      --headline-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.45rem);
+      --subhead-size: clamp(1.05rem, 0.98rem + 0.25vw, 1.15rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.25rem;
+      --space-2xl: 3.5rem;
+
+      --rounded: 0.5rem;
+      --rounded-lg: 0.875rem;
+      --rounded-full: 9999px;
+
+      --top-bar: 5px solid var(--primary);
+      --card-border: 1px solid var(--outline-variant);
+      --card-shadow: 0 1px 3px color-mix(in srgb, var(--on-surface) 6%, transparent), 0 6px 18px color-mix(in srgb, var(--on-surface) 4%, transparent);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.58;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      border-top: var(--top-bar);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: var(--space-lg);
+    }
+
+    .container * { min-width: 0; }
+
+    /* Header */
+    .portal-header {
+      position: static !important;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+      padding-bottom: var(--space-lg);
+      border-bottom: var(--card-border);
+      margin-bottom: var(--space-lg);
+    }
+
+    .brand-eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    h1 {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .subtitle {
+      color: var(--on-surface-variant);
+      margin: var(--space-xs) 0 0;
+      max-width: 62ch;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .countdown-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      box-shadow: var(--card-shadow);
+    }
+
+    .countdown-pill-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+
+    .countdown-pill-value {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xs);
+      margin-bottom: var(--space-lg);
+      box-shadow: var(--card-shadow);
+    }
+
+    .nav-tab {
+      flex: 1 1 180px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      border: 0;
+      border-radius: var(--rounded);
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-family: var(--font-label);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .nav-tab:hover {
+      background: var(--surface-muted);
+      color: var(--on-surface);
+    }
+
+    .nav-tab.active {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .nav-tab:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeSlide var(--dur-short) var(--ease-out); }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards & Surfaces */
+    .card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--card-shadow);
+    }
+
+    .status-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      box-shadow: var(--card-shadow);
+    }
+    .status-card[data-status="ok"] { border-left-color: var(--tertiary); }
+    .status-card[data-status="warn"] { border-left-color: var(--warning); }
+    .status-card[data-status="info"] { border-left-color: var(--primary); }
+
+    h2 {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin: 0 0 var(--space-sm);
+      color: var(--on-surface);
+    }
+
+    h3 {
+      font-family: var(--font-headline);
+      font-size: var(--subhead-size);
+      font-weight: 700;
+      margin: 0 0 var(--space-sm);
+      color: var(--on-surface);
+    }
+
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--on-surface-variant);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--rounded-full);
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .chip[data-status="ok"] { background: var(--tertiary-container); color: var(--on-tertiary-container); }
+    .chip[data-status="warn"] { background: var(--warning-container); color: var(--warning); }
+    .chip[data-status="alert"] { background: var(--error-container); color: var(--error); }
+    .chip[data-status="muted"] { background: var(--surface-muted); color: var(--on-surface-variant); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: 0.55rem 1.1rem;
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--primary); color: var(--on-primary); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary { background: var(--surface-container-low); color: var(--on-surface); border-color: var(--outline); }
+    .btn-secondary:hover { background: var(--surface-muted); }
+    .btn-success { background: var(--tertiary); color: var(--on-primary); }
+    .btn-success:hover { background: var(--on-tertiary-container); }
+    .btn-warn { background: var(--warning-container); color: var(--warning); border-color: var(--warning); }
+    .btn-warn:hover { background: var(--surface-muted); }
+    .btn-sm { min-height: 36px; padding: 0.35rem 0.75rem; font-size: 0.85rem; }
+
+    /* Grids */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+    .module-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    /* Day Selector Sidebar */
+    .week-group { margin-bottom: var(--space-md); }
+    .week-title {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--primary);
+      padding: var(--space-xs) 0;
+      border-bottom: var(--card-border);
+      margin-bottom: var(--space-xs);
+    }
+    .day-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      text-align: left;
+      padding: 0.55rem 0.75rem;
+      min-height: 44px;
+      border-radius: var(--rounded);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .day-btn:hover { background: var(--surface-muted); }
+    .day-btn.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-weight: 700;
+      border-color: var(--primary);
+    }
+    .day-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: var(--rounded-full);
+      background: var(--outline-variant);
+      flex-shrink: 0;
+    }
+    .day-dot.done { background: var(--tertiary); }
+
+    /* Quote Banner */
+    .quote-banner {
+      background: var(--surface-container);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--rounded);
+      padding: var(--space-md) var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+    .quote-text {
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--on-surface);
+      margin: 0 0 var(--space-xs);
+    }
+    .quote-author {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      color: var(--on-primary-container);
+      font-weight: 600;
+    }
+
+    /* Khan Lesson Box */
+    .lesson-box {
+      background: var(--surface-muted);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+    .example-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-left: 4px solid var(--data-4);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      margin-top: var(--space-md);
+    }
+    .example-steps {
+      margin: var(--space-sm) 0 0;
+      padding-left: 1.25rem;
+    }
+    .example-steps li { margin-bottom: var(--space-xs); }
+
+    /* Questions */
+    .question-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-md);
+    }
+    .q-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .q-prompt {
+      font-weight: 700;
+      margin-bottom: var(--space-md);
+      color: var(--on-surface);
+    }
+    .q-passage {
+      background: var(--surface-muted);
+      border-left: 3px solid var(--outline);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      margin-bottom: var(--space-md);
+      font-size: 0.9375rem;
+      color: var(--secondary);
+    }
+    .options-list {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .option-btn {
+      width: 100%;
+      min-height: 44px;
+      text-align: left;
+      padding: 0.65rem 1rem;
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .option-btn:hover { background: var(--surface-muted); border-color: var(--primary); }
+    .option-btn.correct {
+      background: var(--tertiary-container);
+      border-color: var(--tertiary);
+      color: var(--on-tertiary-container);
+      font-weight: 700;
+    }
+    .option-btn.wrong {
+      background: var(--error-container);
+      border-color: var(--error);
+      color: var(--error);
+    }
+    .q-explanation {
+      margin-top: var(--space-md);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      font-size: 0.92rem;
+    }
+    .q-explanation.correct { background: var(--tertiary-container); color: var(--on-tertiary-container); }
+    .q-explanation.wrong { background: var(--error-container); color: var(--error); }
+
+    /* Countdown Clock */
+    .clock-hero {
+      background: var(--on-surface);
+      color: var(--background);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+    .clock-digits {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+    .clock-unit {
+      background: var(--secondary);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      padding: var(--space-md) var(--space-lg);
+      min-width: 92px;
+      text-align: center;
+    }
+    .clock-num {
+      font-family: var(--font-mono);
+      font-size: 2.25rem;
+      font-weight: 600;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-primary);
+    }
+    .clock-lbl {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary-container);
+      margin-top: var(--space-xs);
+    }
+
+    /* Calendar Grid */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: var(--space-sm);
+    }
+    .cal-head {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-align: center;
+      color: var(--on-surface-variant);
+      padding: var(--space-xs);
+    }
+    .cal-cell {
+      min-height: 92px;
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      padding: var(--space-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-xs);
+    }
+    .cal-cell.interactive { cursor: pointer; }
+    .cal-cell.interactive:hover { border-color: var(--primary); background: var(--surface-container); }
+    .cal-cell.done { border-left: 4px solid var(--tertiary); }
+    .cal-cell.exam-day { border: 2px solid var(--primary); background: var(--primary-container); }
+    .cal-cell.empty { background: transparent; border-color: transparent; }
+    .cal-date {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+    .cal-topic {
+      font-size: 0.78rem;
+      line-height: 1.25;
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    /* 3D Flashcard */
+    .flashcard-stage {
+      perspective: 1100px;
+      max-width: 640px;
+      margin: 0 auto var(--space-md);
+    }
+    .flashcard {
+      position: relative;
+      min-height: 290px;
+      transform-style: preserve-3d;
+      transition: transform 0.5s var(--ease-out);
+      cursor: pointer;
+    }
+    .flashcard.flipped { transform: rotateY(180deg); }
+    .flashcard-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-top: 5px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .flashcard-back {
+      transform: rotateY(180deg);
+      border-top-color: var(--tertiary);
+      text-align: left;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .fc-word {
+      font-family: var(--font-headline);
+      font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+      font-weight: 800;
+      color: var(--on-surface);
+      margin-bottom: var(--space-xs);
+    }
+    .fc-pron {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    /* Compact Dense Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      background: var(--surface-container-low);
+      max-height: 540px;
+      overflow-y: auto;
+    }
+    table.vocab-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .vocab-table th {
+      position: sticky;
+      top: 0;
+      background: var(--surface-muted);
+      color: var(--on-surface-variant);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--outline-variant);
+      z-index: 2;
+    }
+    .vocab-table td {
+      padding: 0.48rem 0.75rem;
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+    }
+    .vocab-table tr:hover td { background: var(--surface-muted); }
+
+    /* Form Controls */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      align-items: end;
+      margin-bottom: var(--space-md);
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      flex: 1 1 200px;
+    }
+    label.field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+    input[type="text"], input[type="date"], select, textarea {
+      min-height: 44px;
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+    }
+    select { padding-right: 2rem; }
+    textarea { min-height: 84px; resize: vertical; }
+
+    .alpha-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin-bottom: var(--space-md);
+    }
+    .alpha-btn {
+      min-width: 32px;
+      min-height: 32px;
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border-radius: var(--rounded);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .alpha-btn.active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    /* Diagnostic Bars */
+    .diag-row {
+      margin-bottom: var(--space-md);
+    }
+    .diag-head {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+    .diag-track {
+      height: 12px;
+      background: var(--surface-muted);
+      border-radius: var(--rounded-full);
+      overflow: hidden;
+    }
+    .diag-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: var(--rounded-full);
+      transition: width var(--dur-long) var(--ease-out);
+    }
+
+    .kpi-value {
+      font-family: var(--font-headline);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+      margin: var(--space-xs) 0;
+    }
+
+    .inline-msg {
+      margin-top: var(--space-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--tertiary);
+    }
+
+    @media (max-width: 900px) {
+      .module-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .container { padding: var(--space-md); }
+      .cal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cal-head { display: none; }
+      .clock-num { font-size: 1.6rem; }
+      .clock-unit { min-width: 72px; padding: var(--space-sm) var(--space-md); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="container">
+      <header class="portal-header">
+        <div>
+          <div class="brand-eyebrow">BCA · MEK Review · SHSAT Admissions Track</div>
+          <h1>Magnet School Prep Portal</h1>
+          <p class="subtitle">3-week structured curriculum, spaced-repetition vocabulary vault, and parent verification dashboard built from MEK Simulation Tests 3–12 and Verbal Skill Sets.</p>
+        </div>
+        <div class="header-meta">
+          <div class="countdown-pill" aria-live="polite">
+            <span class="countdown-pill-label">Exam Day (Jan 9)</span>
+            <span class="countdown-pill-value" id="mini-countdown">--d --h --m</span>
+          </div>
+          <span class="chip" id="header-progress-chip">0 / 21 Days Complete</span>
+        </div>
+      </header>
+
+      <nav class="nav-tabs" aria-label="Primary study portal sections">
+        <button type="button" class="nav-tab active" data-tab="modules" onclick="switchTab('modules')">Daily Modules &amp; Lessons</button>
+        <button type="button" class="nav-tab" data-tab="calendar" onclick="switchTab('calendar')">Calendar &amp; Countdown</button>
+        <button type="button" class="nav-tab" data-tab="vocab" onclick="switchTab('vocab')">Vocab Vault &amp; Directory</button>
+        <button type="button" class="nav-tab" data-tab="parent" onclick="switchTab('parent')">Parent Portal (Mom’s Tab)</button>
+      </nav>
+
+      <!-- TAB 1: DAILY MODULES -->
+      <section id="tab-modules" class="tab-panel active">
+        <div class="module-layout">
+          <aside class="card" aria-label="21-day curriculum navigation">
+            <div class="kicker" style="margin-bottom: var(--space-sm);">3-Week Study Roadmap</div>
+            <div id="day-sidebar"></div>
+          </aside>
+
+          <main id="module-main">
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:var(--space-md); flex-wrap:wrap; margin-bottom:var(--space-md);">
+                <div>
+                  <div class="kicker" id="mod-week-kicker">Week 1 · Day 1</div>
+                  <h2 id="mod-title">Loading module…</h2>
+                </div>
+                <div style="display:flex; gap:var(--space-sm); align-items:center; flex-wrap:wrap;">
+                  <span class="chip" id="mod-status-chip" data-status="muted">In Progress</span>
+                  <button type="button" class="btn btn-success btn-sm" id="btn-toggle-day" onclick="toggleDayComplete()">Mark Day Complete</button>
+                </div>
+              </div>
+
+              <div class="quote-banner">
+                <p class="quote-text" id="mod-quote"></p>
+                <div class="quote-author" id="mod-quote-author"></div>
+              </div>
+
+              <div class="lesson-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-sm); flex-wrap:wrap; margin-bottom:var(--space-sm);">
+                  <div>
+                    <div class="kicker">Khan-Style Structural Deep Dive</div>
+                    <h3 id="lesson-title" style="margin:0;"></h3>
+                  </div>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="cycleLessonExample()">Generate New Example</button>
+                </div>
+                <p id="lesson-why" style="margin-top:0;"></p>
+                <div class="example-card">
+                  <div class="kicker" id="example-counter">Worked Example 1 of 3</div>
+                  <div id="example-sentence" style="font-weight:700; margin-top:var(--space-xs);"></div>
+                  <ol class="example-steps" id="example-steps"></ol>
+                </div>
+              </div>
+
+              <div style="margin-bottom:var(--space-lg);">
+                <div class="kicker">Part A · Past Exam Error Remediation</div>
+                <h3>Target Drills (From MEK Tests &amp; Skill Sets)</h3>
+                <div id="target-drills-container"></div>
+              </div>
+
+              <div>
+                <div class="kicker">Part B · High-Rigor Application</div>
+                <h3>5 Advanced Challenge Questions</h3>
+                <div id="challenge-questions-container"></div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </section>
+
+      <!-- TAB 2: CALENDAR & COUNTDOWN -->
+      <section id="tab-calendar" class="tab-panel">
+        <div class="clock-hero">
+          <div>
+            <div class="kicker" style="color:var(--primary-container);">Target Test Date · January 9, 2027 · 8:00 AM</div>
+            <h2 style="color:var(--on-primary); margin-top:var(--space-xs);">Countdown to Magnet Admissions Exam</h2>
+            <p style="color:var(--outline-variant); margin:0; max-width:54ch;">Stay on cadence with one module and 10+ vocabulary words daily. Click any scheduled day on the calendar below to jump directly into its lesson and drills.</p>
+          </div>
+          <div class="clock-digits" aria-live="polite">
+            <div class="clock-unit"><div class="clock-num" id="cd-days">00</div><div class="clock-lbl">Days</div></div>
+            <div class="clock-unit"><div class="clock-num" id="cd-hours">00</div><div class="clock-lbl">Hours</div></div>
+            <div class="clock-unit"><div class="clock-num" id="cd-mins">00</div><div class="clock-lbl">Minutes</div></div>
+            <div class="clock-unit"><div class="clock-num" id="cd-secs">00</div><div class="clock-lbl">Seconds</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-md); margin-bottom:var(--space-md);">
+            <div>
+              <div class="kicker">Nov 19, 2026 — Jan 9, 2027</div>
+              <h3 style="margin:0;">Interactive Study Schedule</h3>
+            </div>
+            <div style="display:flex; gap:var(--space-sm); flex-wrap:wrap;">
+              <span class="chip" data-status="ok">Completed</span>
+              <span class="chip" data-status="info">Scheduled Module</span>
+              <span class="chip" data-status="muted">Review / Buffer</span>
+            </div>
+          </div>
+          <div class="cal-grid" id="calendar-grid"></div>
+        </div>
+      </section>
+
+      <!-- TAB 3: VOCAB VAULT -->
+      <section id="tab-vocab" class="tab-panel">
+        <div class="grid-4" style="margin-bottom:var(--space-lg);">
+          <div class="status-card" data-status="info">
+            <div class="kicker">Today’s Target</div>
+            <div class="kpi-value" id="vocab-deck-count">12 Words</div>
+            <div style="color:var(--on-surface-variant); font-size:0.875rem;">10+ daily words + carry-over</div>
+          </div>
+          <div class="status-card" data-status="ok">
+            <div class="kicker">Mastered (Mom’s Quiz List)</div>
+            <div class="kpi-value" id="vocab-mastered-count">0</div>
+            <div style="color:var(--on-surface-variant); font-size:0.875rem;">Ready for parent verification</div>
+          </div>
+          <div class="status-card" data-status="warn">
+            <div class="kicker">Needs Review</div>
+            <div class="kpi-value" id="vocab-review-count">0</div>
+            <div style="color:var(--on-surface-variant); font-size:0.875rem;">Prioritized in today’s deck</div>
+          </div>
+          <div class="status-card" data-status="info">
+            <div class="kicker">Master Database</div>
+            <div class="kpi-value" id="vocab-total-count">0</div>
+            <div style="color:var(--on-surface-variant); font-size:0.875rem;">Extracted from MEK &amp; Verbal Sets</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:var(--space-lg);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-md); margin-bottom:var(--space-md);">
+            <div>
+              <div class="kicker">Spaced-Repetition Smart Deck</div>
+              <h2 style="margin:0;">Daily Smart Flashcards</h2>
+            </div>
+            <div style="display:flex; gap:var(--space-sm); align-items:center; flex-wrap:wrap;">
+              <label for="vocab-day-select" class="field-label" style="margin:0;">Study Day:</label>
+              <select id="vocab-day-select" onchange="changeVocabDay(this.value)" style="min-height:38px;"></select>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="prevFlashcard()">Prev</button>
+              <span class="kicker" id="fc-position">1 / 12</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="nextFlashcard()">Next</button>
+            </div>
+          </div>
+
+          <div id="flashcard-area">
+            <div class="flashcard-stage">
+              <div class="flashcard" id="smart-flashcard" onclick="flipFlashcard()" tabindex="0" role="button" aria-label="Flip vocabulary flashcard" onkeydown="handleFlashcardKey(event)">
+                <div class="flashcard-face">
+                  <span class="chip" id="fc-status-badge" data-status="muted" style="margin-bottom:var(--space-sm);">Learning</span>
+                  <div class="fc-word" id="fc-word">—</div>
+                  <div class="fc-pron" id="fc-pron">—</div>
+                  <div class="kicker" id="fc-pos">—</div>
+                  <p style="color:var(--on-surface-variant); font-size:0.85rem; margin-top:var(--space-md);">Click card or press Space to reveal definition &amp; source context</p>
+                </div>
+                <div class="flashcard-face flashcard-back">
+                  <div style="width:100%;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-sm); margin-bottom:var(--space-sm);">
+                      <span class="kicker" id="fc-back-word" style="color:var(--tertiary);"></span>
+                      <span class="chip" id="fc-source" data-status="info"></span>
+                    </div>
+                    <h3 id="fc-def" style="margin-bottom:var(--space-md);"></h3>
+                    <div style="background:var(--surface-muted); padding:var(--space-md); border-radius:var(--rounded); border-left:3px solid var(--primary);">
+                      <div class="kicker" style="margin-bottom:var(--space-xs);">Context Sentence</div>
+                      <div id="fc-context" style="font-style:italic;"></div>
+                    </div>
+                  </div>
+                  <div class="kicker" style="margin-top:var(--space-md);">Click card to flip back</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:var(--space-md); flex-wrap:wrap;">
+              <button type="button" class="btn btn-warn" id="btn-needs-review" onclick="markCardStatus('review')">Needs Review (Keep in Today’s Deck)</button>
+              <button type="button" class="btn btn-success" id="btn-mastered" onclick="toggleCardMastered()">Mark Mastered (Send to Mom’s Quiz)</button>
+            </div>
+          </div>
+          <div id="flashcard-empty" style="display:none; text-align:center; padding:var(--space-xl);">
+            <h3>Active Deck Cleared!</h3>
+            <p style="color:var(--on-surface-variant);">All words in today’s active deck are marked Mastered and queued in Mom’s Quiz Station. Switch Study Day or unselect a mastered word in the directory if you want extra practice.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:var(--space-md); margin-bottom:var(--space-md);">
+            <div>
+              <div class="kicker">Complete Notebook Extraction</div>
+              <h2 style="margin:0;">Master Vocabulary List</h2>
+            </div>
+            <div class="kicker" id="vocab-filtered-count">Showing 0 words</div>
+          </div>
+
+          <div class="filter-bar">
+            <div class="field-group">
+              <label for="vocab-search" class="field-label">Search Word or Definition</label>
+              <input type="text" id="vocab-search" placeholder="Type to filter (e.g. laconic, irony, MEK Test 3)…" oninput="renderVocabTable()">
+            </div>
+            <div class="field-group" style="max-width:220px;">
+              <label for="vocab-status-filter" class="field-label">Filter by Mastery Status</label>
+              <select id="vocab-status-filter" onchange="renderVocabTable()">
+                <option value="all">All Statuses</option>
+                <option value="learning">Learning</option>
+                <option value="review">Needs Review</option>
+                <option value="mastered">Mastered</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="alpha-strip" id="alpha-strip" aria-label="Filter vocabulary by starting letter"></div>
+
+          <div class="table-wrap">
+            <table class="vocab-table">
+              <thead>
+                <tr>
+                  <th>Word</th>
+                  <th>POS</th>
+                  <th>Definition</th>
+                  <th>Origin / Source Test</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="vocab-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: PARENT PORTAL (MOM'S TAB) -->
+      <section id="tab-parent" class="tab-panel">
+        <div class="grid-4" style="margin-bottom:var(--space-lg);">
+          <div class="status-card" data-status="info">
+            <div class="kicker">Modules Completed</div>
+            <div class="kpi-value" id="p-modules-done">0 / 21</div>
+            <div style="color:var(--on-surface-variant); font-size:0.875rem;">3-Week Curriculum</div>
+          </div>
+          <div class="status-card" data-status="ok">
+            <div class="kicker">Active Study Streak</div>
+            <div class="kpi-value" id="p-streak">0 Days</div>
+            <div style="color:var(--on-surface-variant); font-size:0.875rem;">Logged study &amp; sign-offs</div>
+          </div>
+          <div class="status-card" data-status="info">
+            <div class="kicker">Drill &amp; Challenge Accuracy</div>
+            <div class="kpi-value" id="p-accuracy">0%</div>
+            <div style="color:var(--on-surface-variant); font-size:0.875rem;" id="p-accuracy-sub">0 questions answered</div>
+          </div>
+          <div class="status-card" data-status="ok">
+            <div class="kicker">Vocab Words Mastered</div>
+            <div class="kpi-value" id="p-vocab-mastered">0</div>
+            <div style="color:var(--on-surface-variant); font-size:0.875rem;">Ready for Mom’s Quiz</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:var(--space-lg);">
+          <div class="card">
+            <div class="kicker">Diagnostic Skill Breakdown</div>
+            <h3>Mastery Across Core Exam Domains</h3>
+            <p style="color:var(--on-surface-variant); font-size:0.9rem; margin-top:0;">Live telemetry computed from target drills, challenge questions, and vocabulary mastery.</p>
+            <div id="diagnostic-bars" style="margin-top:var(--space-md);"></div>
+          </div>
+
+          <div class="card">
+            <div class="kicker">Daily Accountability</div>
+            <h3>Digital Parent Sign-Off</h3>
+            <div style="display:grid; gap:var(--space-md); margin-top:var(--space-sm);">
+              <div class="field-group">
+                <label for="signoff-date" class="field-label">Review Date</label>
+                <input type="date" id="signoff-date">
+              </div>
+              <div class="field-group">
+                <label for="signoff-initials" class="field-label">Parent Signature / Initials</label>
+                <input type="text" id="signoff-initials" placeholder="e.g. Mom / M.K.">
+              </div>
+              <div class="field-group">
+                <label for="signoff-notes" class="field-label">Daily Review Notes &amp; Feedback</label>
+                <textarea id="signoff-notes" placeholder="Note words verified verbally, pacing observations, or focus areas for tomorrow…"></textarea>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-sm); flex-wrap:wrap;">
+                <button type="button" class="btn btn-primary" onclick="saveParentSignOff()">Save Parent Sign-Off</button>
+                <span class="inline-msg" id="signoff-feedback"></span>
+              </div>
+            </div>
+            <div style="margin-top:var(--space-lg); border-top:var(--card-border); padding-top:var(--space-md);">
+              <div class="kicker" style="margin-bottom:var(--space-xs);">Sign-Off Log</div>
+              <div id="signoff-log-list" style="max-height:190px; overflow-y:auto; display:grid; gap:var(--space-sm);"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-md); margin-bottom:var(--space-md);">
+            <div>
+              <div class="kicker">Retention Verification</div>
+              <h2 style="margin:0;">Mom’s Quiz Station</h2>
+              <p style="color:var(--on-surface-variant); margin:var(--space-xs) 0 0;">All words the student marks <strong>Mastered</strong> appear here automatically. Test verbally or run an interactive spot-check—if a word slips, send it right back to Needs Review.</p>
+            </div>
+            <div style="display:flex; gap:var(--space-sm); flex-wrap:wrap;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="setMomQuizMode('verbal')">Verbal Flash Check</button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="setMomQuizMode('mc')">Interactive Spot Quiz</button>
+            </div>
+          </div>
+
+          <div id="mom-quiz-container"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    // =========================================================================
+    // 1. MASTER VOCABULARY DATABASE (Extracted from MEK 3-12, Sim 11-12, Verbal Sets)
+    // =========================================================================
+    const VOCAB_DATA = [
+      { id: 1, word: `laconic`, pron: `luh-KON-ik`, pos: `adj.`, def: `Using very few words; brief and concise to the point of seeming curt.`, ctx: `The mayor's laconic remarks lasted barely a minute, pleasing the chilly crowd.`, src: `Sim Test 12 / Study Suite` },
+      { id: 2, word: `convoluted`, pron: `KON-vuh-loo-tid`, pos: `adj.`, def: `Extremely complex, twisted, and difficult to follow.`, ctx: `Because the assembly instructions were so convoluted, Marcus watched three videos before starting.`, src: `MEK Test 5 / Sim Test 12` },
+      { id: 3, word: `polemical`, pron: `puh-LEM-ih-kul`, pos: `adj.`, def: `Involving strongly critical, controversial, or disputatious writing or speech.`, ctx: `Despite once being a polemical issue, organic molecules in space no longer spark fierce debate.`, src: `MEK Test 10 Q3` },
+      { id: 4, word: `abstruse`, pron: `ab-STROOS`, pos: `adj.`, def: `Difficult to understand; obscure and esoteric.`, ctx: `The symbiotic link between crops and soil microbes remains abstruse to many farmers.`, src: `Verbal Skill Set 3 Q16` },
+      { id: 5, word: `incredulous`, pron: `in-KREJ-uh-lus`, pos: `adj.`, def: `Unwilling or unable to believe something; deeply skeptical.`, ctx: `Many scientists of Mendel's era remained incredulous, dismissing his pea plant conclusions for decades.`, src: `MEK Test 3 Q3` },
+      { id: 6, word: `hoary`, pron: `HOR-ee`, pos: `adj.`, def: `Gray or white with age; ancient and venerable.`, ctx: `Lord Byron writes to cast away garlands and crowns from the head that is hoary.`, src: `MEK Test 11 / Sim Test 11 Q21` },
+      { id: 7, word: `conspicuous`, pron: `kun-SPIK-yoo-us`, pos: `adj.`, def: `Standing out so as to be clearly visible; attracting immediate notice.`, ctx: `Thayer argued that highly conspicuous markings like zebra stripes actually disrupt a predator's search.`, src: `MEK Test 11 / Sim Test 11` },
+      { id: 8, word: `undulated`, pron: `UN-juh-lay-tid`, pos: `verb`, def: `Moved with a smooth wave-like motion; rippled or bent.`, ctx: `The roadway of the Tacoma Narrows Bridge undulated dramatically during high winds.`, src: `MEK Test 11 / Sim Test 11 Q44` },
+      { id: 9, word: `equanimity`, pron: `ee-kwuh-NIM-ih-tee`, pos: `noun`, def: `Mental calmness, composure, and evenness of temper, especially in difficulty.`, ctx: `Nelson Mandela demonstrated extraordinary equanimity, remaining calm despite decades of persecution.`, src: `MEK Test 3 Q4` },
+      { id: 10, word: `didactic`, pron: `dy-DAK-tik`, pos: `adj.`, def: `Intended to teach, particularly having moral instruction as a primary motive.`, ctx: `The musical has a profound real-life lesson, though its didactic purpose manifests near the end.`, src: `MEK Test 3 Q10` },
+      { id: 11, word: `circumscribed`, pron: `SUR-kum-skrybd`, pos: `verb / adj.`, def: `Restricted within strict limits; bounded or confined.`, ctx: `During lockdown, the town's daily activities were tightly circumscribed by curfew rules.`, src: `MEK Verbal Master List` },
+      { id: 12, word: `estimable`, pron: `ES-tuh-muh-bul`, pos: `adj.`, def: `Worthy of great respect, esteem, and admiration.`, ctx: `Her estimable dedication to public literacy earned recognition across the district.`, src: `MEK Verbal Master List` },
+      { id: 13, word: `recanted`, pron: `rih-KAN-tid`, pos: `verb`, def: `Formally withdrew or renounced a previously held belief or statement.`, ctx: `Under pressure from the tribunal, the scholar publicly recanted his earlier claims.`, src: `MEK Verbal Master List` },
+      { id: 14, word: `condoned`, pron: `kun-DOHND`, pos: `verb`, def: `Accepted, overlooked, or allowed behavior considered morally wrong or offensive.`, ctx: `The committee emphasized that tardiness would never be condoned during simulation exams.`, src: `MEK Verbal Master List` },
+      { id: 15, word: `keen`, pron: `KEEN`, pos: `adj.`, def: `Having or showing eagerness, sharpness of perception, or acute sensitivity.`, ctx: `Buck possessed a keen sense of smell that separated shoe leather from city exhaust.`, src: `Sim Test 11 / MEK` },
+      { id: 16, word: `enticed`, pron: `en-TYST`, pos: `verb`, def: `Attracted or tempted by offering pleasure or advantage.`, ctx: `Visitors were enticed into the flooded mine by tales of crystal-clear subterranean lakes.`, src: `MEK Test 3 / Verbal Prep` },
+      { id: 17, word: `maimed`, pron: `MAYMD`, pos: `verb / adj.`, def: `Wounded or injured so seriously that part of the body is permanently damaged.`, ctx: `Storm-driven branches maimed the century-old oak at the edge of the meadow.`, src: `MEK Verbal Master List` },
+      { id: 18, word: `impediments`, pron: `im-PED-uh-munts`, pos: `noun`, def: `Hindrances or obstructions that slow down progress.`, ctx: `Steep slopes and freezing winds act as severe impediments to alpine soil accumulation.`, src: `MEK Test 3 / Verbal Prep` },
+      { id: 19, word: `castigated`, pron: `KAS-tih-gay-tid`, pos: `verb`, def: `Reprimanded or criticized someone severely.`, ctx: `The editorial castigated officials for neglecting the bridge's aerodynamic instability.`, src: `MEK Verbal Master List` },
+      { id: 20, word: `impinge`, pron: `im-PINJ`, pos: `verb`, def: `Have a negative effect on; encroach or intrude upon.`, ctx: `City noise and smog never impinge upon the narrator's quiet Penobscot Bay cabin.`, src: `MEK Test 3 / Verbal Prep` },
+      { id: 21, word: `elusive`, pron: `ih-LOO-siv`, pos: `adj.`, def: `Difficult to find, catch, define, or achieve.`, ctx: `Direct proof of microorganisms on Mars remained elusive after the 1976 Viking landings.`, src: `MEK Test 3 Passage 1` },
+      { id: 22, word: `consummate`, pron: `KON-suh-mit`, pos: `adj.`, def: `Showing the highest degree of skill and flair; complete or perfect.`, ctx: `Stravinsky wrote with consummate precision about rhythm, cadence, and musical order.`, src: `Sim Test 11 / MEK` },
+      { id: 23, word: `opulence`, pron: `OP-yoo-lunss`, pos: `noun`, def: `Great wealth, richness, or luxuriousness.`, ctx: `Unlike the opulence of the palace, Marie Antoinette's misquoted phrase ignored real poverty.`, src: `MEK Test 3 / Verbal Prep` },
+      { id: 24, word: `candor`, pron: `KAN-dur`, pos: `noun`, def: `The quality of being open, honest, and frank in expression.`, ctx: `The coach spoke with refreshing candor when evaluating the team's defensive weaknesses.`, src: `Verbal HW 8-2 Q5` },
+      { id: 25, word: `sanctity`, pron: `SANK-tih-tee`, pos: `noun`, def: `The state or quality of being holy, sacred, or inviolable.`, ctx: `The wilderness memoir celebrates the quiet sanctity of unspoiled springs and forests.`, src: `MEK Test 3 Passage 2` },
+      { id: 26, word: `careened`, pron: `kuh-REEND`, pos: `verb`, def: `Moved swiftly and in an uncontrolled way in a specified direction.`, ctx: `Before its collapse, the suspended roadway careened wildly in the gale.`, src: `Sim Test 11 / MEK` },
+      { id: 27, word: `gregarious`, pron: `grih-GAIR-ee-us`, pos:
