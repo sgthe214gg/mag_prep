@@ -7,6 +7,7 @@
   <meta name="design-style" content="vitals">
   <title>Magnet School Prep Portal — BCA, MEK &amp; SHSAT</title>
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://js.puter.com/v2/"></script>
   <style>
     :root {
       color-scheme: light;
@@ -1526,40 +1527,41 @@
             <div>
               <div class="kicker">Live Code-Changing AI Studio · Changes Persist to Firebase Cloud</div>
               <h2 style="margin:0;">Gemini &amp; AI Code Studio</h2>
-              <p style="color:var(--on-surface-variant); margin:var(--space-xs) 0 0; max-width:70ch;">Connect <strong>Google Gemini</strong> (or <strong>OpenRouter</strong> / <strong>OpenAI</strong>) to chat and directly rewrite, add, or modify any code, feature, function, tab, question, or style in this website. Your API key stays strictly on your own browser.</p>
+              <p style="color:var(--on-surface-variant); margin:var(--space-xs) 0 0; max-width:70ch;">Powered by <strong>Puter.js Free AI</strong> right out of the box—<strong>no API key required</strong>! Chat below to directly rewrite, add, or modify any code, feature, function, tab, question, or style in this website (or optionally switch to your own Gemini, OpenRouter, or OpenAI key).</p>
             </div>
             <span class="chip" id="ai-engine-badge" data-status="warn">Built-In Code Engine (Connect AI Key for Unlimited Edits)</span>
           </div>
 
           <div class="filter-bar" style="margin-bottom:var(--space-xs);">
-            <div class="field-group" style="max-width:200px;">
-              <label for="ai-provider-select" class="field-label">AI Coding Program</label>
+            <div class="field-group" style="max-width:240px;">
+              <label for="ai-provider-select" class="field-label">AI Engine</label>
               <select id="ai-provider-select" onchange="onProviderChange()">
-                <option value="gemini">Google Gemini</option>
-                <option value="openrouter">OpenRouter (Claude/DeepSeek/Free)</option>
-                <option value="openai">OpenAI (GPT-4o)</option>
+                <option value="puter">✨ Puter.js (Free · No API Key!)</option>
+                <option value="gemini">Google Gemini (API Key)</option>
+                <option value="openrouter">OpenRouter (API Key)</option>
+                <option value="openai">OpenAI (API Key)</option>
               </select>
             </div>
             <div class="field-group" style="max-width:230px;">
               <label for="gemini-model-select" class="field-label">Model</label>
-              <input type="text" id="gemini-model-select" value="gemini-2.5-flash" list="ai-model-presets" onchange="saveAiConfig()" placeholder="gemini-2.5-flash">
+              <input type="text" id="gemini-model-select" value="default" list="ai-model-presets" onchange="saveAiConfig()" placeholder="default">
               <datalist id="ai-model-presets">
+                <option value="default"></option>
                 <option value="gemini-2.5-flash"></option>
-                <option value="gemini-2.5-pro"></option>
-                <option value="gemini-2.0-flash"></option>
-                <option value="google/gemini-2.5-flash"></option>
-                <option value="deepseek/deepseek-r1:free"></option>
-                <option value="qwen/qwen-2.5-coder-32b-instruct:free"></option>
                 <option value="gpt-4o-mini"></option>
-                <option value="gpt-4o"></option>
+                <option value="claude-sonnet-4"></option>
+                <option value="deepseek-chat"></option>
+                <option value="gemini-3.5-flash-lite"></option>
+                <option value="gemini-3.8-flash"></option>
+                <option value="google/gemini-3.5-flash-lite"></option>
               </datalist>
             </div>
-            <div class="field-group" style="flex:2 1 250px;">
-              <label for="gemini-api-key" class="field-label" id="api-key-field-label">Google Gemini API Key (Local Browser Only)</label>
-              <input type="text" id="gemini-api-key" placeholder="AIzaSy...">
+            <div class="field-group" id="api-key-group" style="flex:2 1 250px;">
+              <label for="gemini-api-key" class="field-label" id="api-key-field-label">API Key (Not Needed for Puter.js)</label>
+              <input type="text" id="gemini-api-key" placeholder="No API key required with Puter.js!">
             </div>
             <button type="button" class="btn btn-primary btn-sm" onclick="saveAiConfig()">Save</button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="testAiConnection()">Test</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="testAiConnection()">Test AI</button>
             <button type="button" class="btn btn-warn btn-sm" onclick="clearAiKey()">Clear</button>
           </div>
           <div class="inline-msg" id="gemini-key-feedback" style="margin:0;"></div>
@@ -4662,15 +4664,65 @@
     }
 
     function getAiConfig() {
-      const provider = localStorage.getItem(`magnet_prep_ai_provider`) || `gemini`;
-      const apiKey = (localStorage.getItem(`magnet_prep_gemini_key`) || ``).trim();
-      const defaultModel = provider === `openai` ? `gpt-4o-mini` : provider === `openrouter` ? `google/gemini-2.5-flash` : `gemini-2.5-flash`;
-      const model = (localStorage.getItem(`magnet_prep_gemini_model`) || defaultModel).trim();
-      return { provider, apiKey, model };
+      const savedProv = localStorage.getItem(`magnet_prep_ai_provider`);
+      const savedKey = (localStorage.getItem(`magnet_prep_gemini_key`) || ``).trim();
+      // Default to Puter.js (Free, No API Key) unless user explicitly saved another provider + key
+      const provider = savedProv || (savedKey ? `gemini` : `puter`);
+      const defaultModel = provider === `puter` ? `default` : provider === `openai` ? `gpt-4o-mini` : provider === `openrouter` ? `google/gemini-3.5-flash-lite` : `gemini-3.5-flash-lite`;
+      let model = (localStorage.getItem(`magnet_prep_gemini_model`) || defaultModel).trim();
+      if (provider === `gemini` && [`gemini-2.5-flash`, `gemini-2.5-pro`, `gemini-2.0-flash`, `default`].includes(model)) {
+        model = `gemini-3.5-flash-lite`;
+        localStorage.setItem(`magnet_prep_gemini_model`, model);
+      }
+      const ready = provider === `puter`
+        ? (typeof window.puter !== `undefined` && window.puter && window.puter.ai && typeof window.puter.ai.chat === `function`)
+        : Boolean(savedKey);
+      return { provider, apiKey: savedKey, model, ready };
+    }
+
+    function extractPuterText(resp) {
+      if (typeof resp === `string`) return resp;
+      if (!resp) return ``;
+      if (typeof resp.text === `string`) return resp.text;
+      const msg = resp.message || (resp.choices && resp.choices[0] && resp.choices[0].message);
+      if (msg) {
+        if (typeof msg.content === `string`) return msg.content;
+        if (Array.isArray(msg.content)) {
+          return msg.content.map(part => (typeof part === `string` ? part : (part && part.text) || ``)).join(``);
+        }
+      }
+      if (typeof resp.toString === `function` && resp.toString() !== `[object Object]`) {
+        return resp.toString();
+      }
+      return JSON.stringify(resp);
     }
 
     async function callConfiguredAi(promptText, expectJson) {
       const { provider, apiKey, model } = getAiConfig();
+
+      if (provider === `puter`) {
+        if (typeof window.puter === `undefined` || !window.puter?.ai?.chat) {
+          throw new Error(`Puter.js is still loading—refresh the page and try again.`);
+        }
+        let resp;
+        try {
+          if (model && model !== `default`) {
+            resp = await window.puter.ai.chat(promptText, { model });
+          } else {
+            resp = await window.puter.ai.chat(promptText);
+          }
+        } catch (firstErr) {
+          // If a specific model name isn't supported, auto-retry with Puter's default model
+          if (model && model !== `default`) {
+            resp = await window.puter.ai.chat(promptText);
+          } else {
+            throw firstErr;
+          }
+        }
+        const rawText = extractPuterText(resp);
+        return expectJson ? parseLooseJson(rawText) : rawText;
+      }
+
       if (!apiKey) return null;
 
       if (provider === `gemini`) {
@@ -4681,7 +4733,11 @@
           headers: { "Content-Type": `application/json` },
           body: JSON.stringify(body)
         });
-        if (!resp.ok) throw new Error(`Gemini HTTP ${resp.status}`);
+        if (!resp.ok) {
+          let detail = ``;
+          try { const eData = await resp.json(); detail = eData?.error?.message ? `: ${eData.error.message}` : ``; } catch (e) {}
+          throw new Error(`Gemini HTTP ${resp.status}${detail}`);
+        }
         const data = await resp.json();
         const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || ``;
         return expectJson ? parseLooseJson(rawText) : rawText;
@@ -4714,8 +4770,21 @@
     }
 
     function parseLooseJson(raw) {
-      const cleaned = String(raw || ``).trim().replace(/^```(?:json)?\s*/i, ``).replace(/\s*```$/, ``).trim();
-      return JSON.parse(cleaned);
+      let cleaned = String(raw || ``).trim().replace(/^```(?:json)?\s*/i, ``).replace(/\s*```$/, ``).trim();
+      try {
+        return JSON.parse(cleaned);
+      } catch (e) {
+        // Extract first JSON object or array if the AI added commentary around it
+        const objStart = cleaned.indexOf(`{`);
+        const arrStart = cleaned.indexOf(`[`);
+        const isArr = arrStart !== -1 && (objStart === -1 || arrStart < objStart);
+        const start = isArr ? arrStart : objStart;
+        const end = isArr ? cleaned.lastIndexOf(`]`) : cleaned.lastIndexOf(`}`);
+        if (start !== -1 && end > start) {
+          return JSON.parse(cleaned.slice(start, end + 1));
+        }
+        throw e;
+      }
     }
 
     async function bulkAutoImportVocab() {
@@ -4754,19 +4823,19 @@
 
       const initStatus = statusSel ? statusSel.value : `learning`;
       const srcTag = (srcEl ? srcEl.value : ``).trim() || `Bulk Auto-Imported`;
-      const { apiKey } = getAiConfig();
+      const { ready: aiReady } = getAiConfig();
 
       if (btn) btn.disabled = true;
       if (fb) {
         fb.style.color = `var(--primary)`;
-        fb.textContent = apiKey
+        fb.textContent = aiReady
           ? `✨ Generating definitions, pronunciations & context sentences for ${uniqueWords.length} words…`
           : `✨ Looking up ${uniqueWords.length} words in the built-in English dictionary (0 / ${uniqueWords.length})…`;
       }
 
       let generatedEntries = [];
 
-      if (apiKey) {
+      if (aiReady) {
         try {
           const prompt = `Generate SHSAT / Magnet High School Admissions vocabulary entries for these exact words: ${JSON.stringify(uniqueWords)}.
 Return ONLY a valid JSON array of objects (no markdown), one per word, each with keys:
@@ -4916,8 +4985,8 @@ Return ONLY a valid JSON array of objects (no markdown), one per word, each with
       if (fbEl) { fbEl.style.color = `var(--primary)`; fbEl.textContent = `Looking up "${word}"…`; }
 
       let parsed = null;
-      const { apiKey } = getAiConfig();
-      if (apiKey) {
+      const { ready: aiReady } = getAiConfig();
+      if (aiReady) {
         try {
           const prompt = `Provide a concise high-school entrance exam (SHSAT/BCA) vocabulary entry for the word "${word}". Return ONLY valid JSON with keys: "pos" (e.g. "adj.", "noun", "verb", "adv."), "pron" (phonetic syllable guide like "ih-FEM-ur-ul"), "def" (clear 1-sentence definition), and "ctx" (1 vivid academic context sentence using the word).`;
           parsed = await callConfiguredAi(prompt, true);
@@ -4935,7 +5004,7 @@ Return ONLY a valid JSON array of objects (no markdown), one per word, each with
         if (parsed.def) document.getElementById(`new-vocab-def`).value = parsed.def;
         if (parsed.ctx) document.getElementById(`new-vocab-ctx`).value = parsed.ctx;
         if (!document.getElementById(`new-vocab-src`).value) {
-          document.getElementById(`new-vocab-src`).value = apiKey ? `AI Vocab Builder` : `Dictionary Auto-Fill`;
+          document.getElementById(`new-vocab-src`).value = aiReady ? `AI Vocab Builder` : `Dictionary Auto-Fill`;
         }
         if (fbEl) { fbEl.style.color = `var(--tertiary)`; fbEl.textContent = `Auto-filled "${word}"! Click "Save New Word to Vault & Cloud" to keep it.`; }
       } else {
@@ -5504,8 +5573,9 @@ Return ONLY a valid JSON array of objects (no markdown), one per word, each with
       const prov = document.getElementById(`ai-provider-select`).value;
       const modInp = document.getElementById(`gemini-model-select`);
       if (modInp) {
-        if (prov === `gemini`) modInp.value = `gemini-2.5-flash`;
-        else if (prov === `openrouter`) modInp.value = `google/gemini-2.5-flash`;
+        if (prov === `puter`) modInp.value = `default`;
+        else if (prov === `gemini`) modInp.value = `gemini-3.5-flash-lite`;
+        else if (prov === `openrouter`) modInp.value = `google/gemini-3.5-flash-lite`;
         else if (prov === `openai`) modInp.value = `gpt-4o-mini`;
       }
       localStorage.setItem(`magnet_prep_ai_provider`, prov);
@@ -5515,51 +5585,63 @@ Return ONLY a valid JSON array of objects (no markdown), one per word, each with
     }
 
     function updateProviderLabels() {
-      const prov = (document.getElementById(`ai-provider-select`)?.value) || `gemini`;
+      const prov = (document.getElementById(`ai-provider-select`)?.value) || `puter`;
       const lbl = document.getElementById(`api-key-field-label`);
       const inp = document.getElementById(`gemini-api-key`);
-      if (prov === `gemini`) {
-        if (lbl) lbl.textContent = `Google Gemini API Key (Local Browser Only)`;
-        if (inp) inp.placeholder = `AIzaSy...`;
-      } else if (prov === `openrouter`) {
-        if (lbl) lbl.textContent = `OpenRouter API Key (Local Browser Only)`;
-        if (inp) inp.placeholder = `sk-or-v1-...`;
+      const grp = document.getElementById(`api-key-group`);
+      if (prov === `puter`) {
+        if (lbl) lbl.textContent = `API Key (Not Needed for Puter.js Free AI)`;
+        if (inp) { inp.placeholder = `No API key needed! Click Test AI or start chatting.`; inp.disabled = true; }
+        if (grp) grp.style.opacity = `0.65`;
       } else {
-        if (lbl) lbl.textContent = `OpenAI API Key (Local Browser Only)`;
-        if (inp) inp.placeholder = `sk-...`;
+        if (inp) inp.disabled = false;
+        if (grp) grp.style.opacity = `1`;
+        if (prov === `gemini`) {
+          if (lbl) lbl.textContent = `Google Gemini API Key (Local Browser Only)`;
+          if (inp) inp.placeholder = `AIzaSy...`;
+        } else if (prov === `openrouter`) {
+          if (lbl) lbl.textContent = `OpenRouter API Key (Local Browser Only)`;
+          if (inp) inp.placeholder = `sk-or-v1-...`;
+        } else {
+          if (lbl) lbl.textContent = `OpenAI API Key (Local Browser Only)`;
+          if (inp) inp.placeholder = `sk-...`;
+        }
       }
     }
 
     function saveAiConfig() {
       const prov = document.getElementById(`ai-provider-select`).value;
-      const model = (document.getElementById(`gemini-model-select`).value || ``).trim();
+      const model = (document.getElementById(`gemini-model-select`).value || ``).trim() || (prov === `puter` ? `default` : `gemini-3.5-flash-lite`);
       const key = (document.getElementById(`gemini-api-key`).value || ``).trim();
       localStorage.setItem(`magnet_prep_ai_provider`, prov);
       localStorage.setItem(`magnet_prep_gemini_model`, model);
       localStorage.setItem(`magnet_prep_gemini_key`, key);
+      updateProviderLabels();
       updateAiEngineBadge();
       const fb = document.getElementById(`gemini-key-feedback`);
       if (fb) {
         fb.style.color = `var(--tertiary)`;
-        fb.textContent = key ? `✅ Saved ${prov.toUpperCase()} (${model}) locally! Chat below to change any code.` : `Cleared API key.`;
+        fb.textContent = prov === `puter`
+          ? `✅ Puter.js Free AI (${model}) is active—no API key needed! Click Test AI or chat below.`
+          : (key ? `✅ Saved ${prov.toUpperCase()} (${model}) locally! Chat below to change any code.` : `Cleared API key.`);
       }
     }
 
     function clearAiKey() {
       localStorage.removeItem(`magnet_prep_gemini_key`);
-      const inp = document.getElementById(`gemini-api-key`);
-      if (inp) inp.value = ``;
-      updateAiEngineBadge();
+      localStorage.setItem(`magnet_prep_ai_provider`, `puter`);
+      localStorage.setItem(`magnet_prep_gemini_model`, `default`);
+      loadAiConfigInputs();
       const fb = document.getElementById(`gemini-key-feedback`);
-      if (fb) { fb.style.color = `var(--on-surface-variant)`; fb.textContent = `API key cleared. Built-In Code Engine active.`; }
+      if (fb) { fb.style.color = `var(--tertiary)`; fb.textContent = `Switched back to Puter.js Free AI (No API Key Needed).`; }
     }
 
     async function testAiConnection() {
       saveAiConfig();
       const fb = document.getElementById(`gemini-key-feedback`);
       const { provider, apiKey, model } = getAiConfig();
-      if (!apiKey) {
-        if (fb) { fb.style.color = `var(--error)`; fb.textContent = `Paste an API key first, then click Test.`; }
+      if (provider !== `puter` && !apiKey) {
+        if (fb) { fb.style.color = `var(--error)`; fb.textContent = `Paste an API key first, or switch AI Engine to Puter.js (Free · No API Key!).`; }
         return;
       }
       if (fb) { fb.style.color = `var(--primary)`; fb.textContent = `Testing ${provider.toUpperCase()} (${model})…`; }
@@ -5567,19 +5649,19 @@ Return ONLY a valid JSON array of objects (no markdown), one per word, each with
         const reply = await callConfiguredAi(`Reply in 5 words: Live code studio is ready!`, false);
         if (fb) { fb.style.color = `var(--tertiary)`; fb.textContent = `✅ Connected to ${provider.toUpperCase()} (${model}): "${String(reply).trim()}"`; }
       } catch (err) {
-        if (fb) { fb.style.color = `var(--error)`; fb.textContent = `❌ Connection failed (${err.message}). Check your key and model name.`; }
+        if (fb) { fb.style.color = `var(--error)`; fb.textContent = `❌ Connection failed (${err.message || err}).`; }
       }
     }
 
     function updateAiEngineBadge() {
       const badge = document.getElementById(`ai-engine-badge`);
       if (!badge) return;
-      const { provider, apiKey, model } = getAiConfig();
-      const names = { gemini: `Google Gemini`, openrouter: `OpenRouter`, openai: `OpenAI` };
-      badge.textContent = apiKey
+      const { provider, ready, model } = getAiConfig();
+      const names = { puter: `Puter.js Free AI`, gemini: `Google Gemini`, openrouter: `OpenRouter`, openai: `OpenAI` };
+      badge.textContent = ready
         ? `✨ ${names[provider] || provider} Live (${model})`
-        : `Built-In Code Engine (Add AI Key for Unlimited Edits)`;
-      badge.dataset.status = apiKey ? `ok` : `warn`;
+        : (provider === `puter` ? `⏳ Loading Puter.js AI…` : `Built-In Engine (Switch to Puter.js or Add Key)`);
+      badge.dataset.status = ready ? `ok` : `warn`;
     }
 
     function renderCustomTabsAndFeatures(forceRun) {
@@ -5824,8 +5906,8 @@ Return ONLY a valid JSON array of objects (no markdown), one per word, each with
       appState.aiHistory.push({ role: `user`, text: prompt });
       renderAiChatHistory();
 
-      const { apiKey, provider } = getAiConfig();
-      if (apiKey) {
+      const { ready: aiReady, provider } = getAiConfig();
+      if (aiReady) {
         if (btn) btn.disabled = true;
         const chatBox = document.getElementById(`ai-chat-history`);
         const thinkingDiv = document.createElement(`div`);
@@ -6240,10 +6322,10 @@ Use CSS variables (var(--primary), var(--surface-container-low), var(--on-surfac
       appState.tutorHistory.push({ role: `user`, text: q });
       renderTutorMessages();
 
-      const { apiKey } = getAiConfig();
+      const { ready: aiReady } = getAiConfig();
       const mod = getAllCurriculum().find(m => m.day === appState.currentDay);
 
-      if (apiKey) {
+      if (aiReady) {
         if (btn) btn.disabled = true;
         const box = document.getElementById(`tutor-chat-messages`);
         const th = document.createElement(`div`);
